@@ -43,18 +43,23 @@ namespace Nuke.Common.Execution
             };
         }
 
+        public static LoggingLevelSwitch LoggingLevel { get; set; }
+
         public static void Configure(NukeBuild build = null)
         {
             if (build != null)
                 DeleteOldLogFiles();
 
+            LoggingLevel = new LoggingLevelSwitch();
+            LoggingLevel.MinimumLevel = LogEventLevel.Information;
+
             Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.ControlledBy(LoggingLevel)
                 .Enrich.With<TargetLogEventEnricher>()
                 .ConfigureHost(build)
                 .ConfigureConsole(build)
                 .ConfigureInMemory(build)
                 .ConfigureFiles(build)
-                .ConfigureLevel()
                 .ConfigureFilter()
                 .CreateLogger();
         }
@@ -71,12 +76,17 @@ namespace Nuke.Common.Execution
 
         public static LoggerConfiguration ConfigureConsole(this LoggerConfiguration configuration, [CanBeNull] NukeBuild build)
         {
+            //return configuration
+            //    .WriteTo.Console(
+            //        outputTemplate: build != null ? NukeBuild.Host.OutputTemplate : Host.DefaultOutputTemplate,
+            //        theme: (ConsoleTheme)(build != null ? NukeBuild.Host.Theme : Host.DefaultTheme),
+            //        applyThemeToRedirectedOutput: true,
+            //        levelSwitch: LevelSwitch);
             return configuration
                 .WriteTo.Console(
                     outputTemplate: build != null ? NukeBuild.Host.OutputTemplate : Host.DefaultOutputTemplate,
                     theme: (ConsoleTheme)(build != null ? NukeBuild.Host.Theme : Host.DefaultTheme),
-                    applyThemeToRedirectedOutput: true,
-                    levelSwitch: LevelSwitch);
+                    applyThemeToRedirectedOutput: true);
         }
 
         public static LoggerConfiguration ConfigureHost(this LoggerConfiguration configuration, [CanBeNull] NukeBuild build)
@@ -216,7 +226,7 @@ namespace Nuke.Common.Execution
         {
             private static LogEventProperty s_defaultProperty = new LogEventProperty("Target", new ScalarValue(""));
 
-            public  static LogEventProperty Property;
+            public static LogEventProperty Property;
 
             public static LogEventProperty Current => Property ?? s_defaultProperty;
 
