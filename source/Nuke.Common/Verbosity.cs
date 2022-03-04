@@ -12,6 +12,7 @@ namespace Nuke.Common
     public enum Verbosity
     {
         Verbose,
+        Debug,
         Normal,
         Minimal,
         Quiet
