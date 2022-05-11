@@ -9,6 +9,7 @@
     <NoWarn>CS0649;CS0169</NoWarn>
     <NukeRootDirectory>.\..</NukeRootDirectory>
     <NukeTelemetryVersion>1</NukeTelemetryVersion>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <!-- Test properties for MSBuild integration -->
